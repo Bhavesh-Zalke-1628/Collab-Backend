@@ -12,6 +12,10 @@ const userSchema = new Schema({
         trim: true,
         lowercase: true,
     },
+    mobileNmber: {
+        tupe: Number,
+        required: [true, "number is required"],
+    },
     email: {
         type: String,
         required: [true, "Email is required"],

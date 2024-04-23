@@ -186,8 +186,6 @@ const allPayment = async (req, res, next) => {
         console.log("Final Month Payment:", finalMonthPayment);
         console.log("Monthly Sales Record:", monthlySalesRecord);
 
-
-
         res.status(200).json({
             success: true,
             msg: "All payments",

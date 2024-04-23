@@ -17,7 +17,7 @@ const cookieOption = {
     secure: true
 }
 const registerUser = async (req, res, next) => {
-    const { fullname, email, password } = req.body
+    const { fullname, email, password, mobileNmber } = req.body
     try {
         if (!fullname || !email || !password) {
             return next(new Apperror('All fields are required', 400))
@@ -28,10 +28,18 @@ const registerUser = async (req, res, next) => {
             return next(new Apperror("Email already exist", 400))
         }
 
+        const mobileNumberExist = await User.findOne({ mobileNumber })
+
+        if (mobileNmber) {
+            return next(
+                new Apperror("Mobile number already exist", 400)
+            )
+        }
         const user = await User.create({
             email,
             fullname,
             password,
+            mobileNmber,
             avatar: {
                 public_id: "",
                 secure_url: ""
@@ -85,74 +93,6 @@ const registerUser = async (req, res, next) => {
         })
     }
 }
-// const registerAdmin = async (req, res, next) => {
-//     const { fullname, email, password } = req.body
-//     console.log(fullname, email, password)
-//     try {
-//         if (!fullname || !email || !password) {
-//             return next(new Apperror('All fields are required', 400))
-//         }
-
-//         const userExist = await User.findOne({ email })
-//         if (userExist) {
-//             return next(new Apperror("Email already exist", 400))
-//         }
-
-//         const user = await User.create({
-//             email,
-//             fullname,
-//             password,
-//             avatar: {
-//                 public_id: "",
-//                 secure_url: ""
-//             }
-//         })
-
-//         user.role = "Admin"
-//         await user.save()
-//         console.log('created admin', user)
-
-//         // Upload the avatar Image
-//         console.log(req.file)
-//         if (req.file) {
-//             try {
-//                 const result = await cloudinary.v2.uploader.upload(req.file.path, {
-//                     folder: "avatars",
-//                     width: 150,
-//                     height: 150,
-//                     crop: "fill",
-//                     gravity: "faces",
-//                 })
-//                 if (result) {
-//                     user.avatar.public_id = result.public_id
-//                     user.avatar.secure_url = result.secure_url
-
-//                     // remove the file from the local server 
-//                     fs.rm(`uploads/${req.file.filename}`)
-//                 }
-//             } catch (error) {
-//                 return next(new Apperror("Image upload failed" || error, 500))
-//             }
-//         }
-
-//         await user.save()
-//         const token = await user.generateJwttoken();
-//         user.password = undefined
-//         res.cookie('token', token, cookieOption)
-//         console.log('user save', user)
-//         res.status(200).json({
-//             success: true,
-//             msg: "User registered successfully",
-//             user
-//         })
-//     }
-//     catch (error) {
-//         res.status(400).json({
-//             success: false,
-//             msg: "User registration failed"
-//         })
-//     }
-// }
 
 const loginUser = async (req, res, next) => {
     const { email, password } = req.body
@@ -164,7 +104,7 @@ const loginUser = async (req, res, next) => {
         if (!user || !user.comparedPassword(password)) {
             return next(new Apperror("Email or password does not match", 400))
         }
-        // const isMatch = await bcrypt.compare(password, user.password);
+
 
         const token = await user.generateJwttoken();
         user.password = undefined
@@ -175,6 +115,7 @@ const loginUser = async (req, res, next) => {
             msg: "User logged in successfully",
             user
         })
+
     } catch (error) {
         return next(new Apperror(error, 400))
     }

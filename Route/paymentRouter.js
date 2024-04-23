@@ -7,7 +7,6 @@ const router = Router()
 router
     .route('/razorpay-key/getid')
     .get(
-
         getRazorpayKey
     )
 router
