@@ -9,7 +9,7 @@ import upload from '../middleware/multerMiddle.js'
 import { isLoggedIn } from "../middleware/authMiddleWare.js";
 
 router.route('/register').post(upload.single('avatar'), registerUser);
-router.route('/login/user').post(loginUser);
+router.route('/login').post(loginUser);
 router.route('/logout').get(logout);
 router.route('/me').get(isLoggedIn, getProfile);
 router.post('/reset', forgotPassword);

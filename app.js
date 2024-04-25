@@ -8,9 +8,9 @@ import morgan from 'morgan';
 
 // import the files
 import authRouter from './Route/authRouter.js'
-// import courceRouter from './Route/courceRouter.js'
 import paymentRouter from './Route/paymentRouter.js'
-// import contactRouter from './Route/contactRouter.js'
+import userRouter from './Route/userRegistrationRoute.js'
+
 // parsing the data is present in the database
 app.use(express.json());
 
@@ -34,12 +34,14 @@ app.use(express.urlencoded({ extended: true }));
 
 // userRoute 
 app.use('/api/auth', authRouter)
-// CourceRoute
-// app.use('/api/cource', courceRouter)
+
 // PaymentRoute 
 app.use('/api/payment', paymentRouter)
-// ContactRoute
-// app.use('/api/contact', contactRouter)
+
+
+// User registration Router 
+app.use('/api/user', userRouter)
+
 
 app.get('/ping', (req, res) => {
     res.status(200).json({

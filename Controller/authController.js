@@ -17,9 +17,14 @@ const cookieOption = {
     secure: true
 }
 const registerUser = async (req, res, next) => {
-    const { fullname, email, password, mobileNmber } = req.body
+    const { username, email, password, Mo_number } = req.body
     try {
-        if (!fullname || !email || !password) {
+        console.log('he')
+        console.log('username', username)
+        console.log('email', email)
+        console.log('password', password)
+        console.log('Mo_number', Mo_number)
+        if (!username || !email || !password || !Mo_number) {
             return next(new Apperror('All fields are required', 400))
         }
 
@@ -28,51 +33,50 @@ const registerUser = async (req, res, next) => {
             return next(new Apperror("Email already exist", 400))
         }
 
-        const mobileNumberExist = await User.findOne({ mobileNumber })
+        // const mobileNumberExist = await User.findOne({ mobileNumber })
 
-        if (mobileNmber) {
-            return next(
-                new Apperror("Mobile number already exist", 400)
-            )
-        }
+        // if (mobileNumber) {
+        //     return next(
+        //         new Apperror("Mobile number already exist", 400)
+        //     )
+        // }
+
+
         const user = await User.create({
             email,
-            fullname,
+            username,
             password,
-            mobileNmber,
-            avatar: {
-                public_id: "",
-                secure_url: ""
-            }
+            Mo_number
         })
 
         if (!user) {
             return next(new Apperror("User registration Failed", 400))
         }
 
-        // Upload the avatar Image
 
-        console.log(req.file)
-        if (req.file) {
-            try {
-                const result = await cloudinary.v2.uploader.upload(req.file.path, {
-                    folder: "avatars",
-                    width: 150,
-                    height: 150,
-                    crop: "fill",
-                    gravity: "faces",
-                })
-                if (result) {
-                    user.avatar.public_id = result.public_id
-                    user.avatar.secure_url = result.secure_url
+        // // Upload the avatar Image
 
-                    // remove the file from the local server 
-                    fs.rm(`uploads/${req.file.filename}`)
-                }
-            } catch (error) {
-                return next(new Apperror("Image upload failed" || error, 500))
-            }
-        }
+        // console.log(req.file)
+        // if (req.file) {
+        //     try {
+        //         const result = await cloudinary.v2.uploader.upload(req.file.path, {
+        //             folder: "avatars",
+        //             width: 150,
+        //             height: 150,
+        //             crop: "fill",
+        //             gravity: "faces",
+        //         })
+        //         if (result) {
+        //             user.avatar.public_id = result.public_id
+        //             user.avatar.secure_url = result.secure_url
+
+        //             // remove the file from the local server 
+        //             fs.rm(`uploads/${req.file.filename}`)
+        //         }
+        //     } catch (error) {
+        //         return next(new Apperror("Image upload failed" || error, 500))
+        //     }
+        // }
 
         await user.save()
         const token = await user.generateJwttoken();
@@ -95,21 +99,30 @@ const registerUser = async (req, res, next) => {
 }
 
 const loginUser = async (req, res, next) => {
+    console.log(req.body)
     const { email, password } = req.body
     try {
+        console.log('email', email)
+        console.log('password', password)
         if (!email || !password) {
             return next(new Apperror("All fields are required", 400))
         }
+
         const user = await User.findOne({ email }).select("+password")
+
+        console.log(user)
         if (!user || !user.comparedPassword(password)) {
             return next(new Apperror("Email or password does not match", 400))
         }
 
+        // const token = await user.generateJwttoken();
+        // console.log('token', token)
+        // user.password = undefined
 
-        const token = await user.generateJwttoken();
-        user.password = undefined
-        res.cookie('token', token, cookieOption)
-        user.save()
+        // res.cookie('token', token, cookieOption)
+        await user.save()
+
+        console.log('user', user)
         res.status(200).json({
             success: true,
             msg: "User logged in successfully",
@@ -117,7 +130,7 @@ const loginUser = async (req, res, next) => {
         })
 
     } catch (error) {
-        return next(new Apperror(error, 400))
+        return next(new Apperror(`error in login : ${error} `, 400))
     }
 }
 const logout = (req, res, next) => {
@@ -246,15 +259,15 @@ const changePassword = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
     try {
-        const { fullname } = req.body;
+        const { username } = req.body;
         const { id } = req.params
         const userid = id.toString()
         const user = await User.findById(userid);
         if (!user) {
             return next(new Apperror("User does not exist", 400));
         }
-        if (req.fullname) {
-            user.fullname = fullname
+        if (req.username) {
+            user.username = username
         }
         if (req.file) {
             await cloudinary.v2.uploader.destroy(user.avatar.public_id);

@@ -2,57 +2,77 @@ import { Schema, model } from 'mongoose'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
+import { type } from 'os'
+
+// const userSchema = new Schema({
+//     username: {
+//         type: String,
+//         required: [true, 'Name is required'],
+//         maxLenght: [5, "Name must be atleast 5 character"],
+//         maxLenght: [20, "Name should be less than 5 character"],
+//         trim: true,
+//         lowercase: true,
+//     },
+//     Mo_number: {
+//         tupe: Number,
+//         required: [true, "number is required"],
+//     },
+//     email: {
+//         type: String,
+//         required: [true, "Email is required"],
+//         trim: true,
+//         unique: true,
+//         lowercase: true,
+//     },
+//     password: {
+//         type: String,
+//         required: true,
+//         select: false,
+//         maxLenght: [8, "Name must be atleast 8 character"],
+//     },
+//     // avatar: {
+//     //     public_id: {
+//     //         type: String
+//     //     },
+//     //     secure_url: {
+//     //         type: String
+//     //     }
+//     // },
+//     role: {
+//         type: String,
+//         enum: ['User', 'Admin'],
+//         default: "User"
+//     },
+//     forgotPasswordToken: String,
+//     forgotPasswordExpiry: Date,
+//     subscription: {
+//         id: String,
+//         status: String
+//     }
+// },
+//     {
+//         timestamps: true
+//     }
+// )
+
 
 const userSchema = new Schema({
-    fullname: {
-        type: String,
-        required: [true, 'Name is required'],
-        maxLenght: [5, "Name must be atleast 5 character"],
-        maxLenght: [20, "Name should be less than 5 character"],
-        trim: true,
-        lowercase: true,
+    username: {
+        type: String
     },
-    mobileNmber: {
-        tupe: Number,
-        required: [true, "number is required"],
+    Mo_number: {
+        type: Number
     },
     email: {
-        type: String,
-        required: [true, "Email is required"],
-        trim: true,
-        unique: true,
-        lowercase: true,
+        type: String
     },
     password: {
-        type: String,
-        required: true,
-        select: false,
-        maxLenght: [8, "Name must be atleast 8 character"],
-    },
-    avatar: {
-        public_id: {
-            type: String
-        },
-        secure_url: {
-            type: String
-        }
-    },
-    role: {
-        type: String,
-        enum: ['User', 'Admin'],
-        default: "User"
-    },
-    forgotPasswordToken: String,
-    forgotPasswordExpiry: Date,
-    subscription: {
-        id: String,
-        status: String
+        type: String
     }
-},
-    {
-        timestamps: true
-    }
-)
+}, {
+    timestamps: true
+})
+
 
 // ecnrypt the password
 userSchema.pre('save', async function (next) {
@@ -100,5 +120,7 @@ userSchema.methods.generateResetPasswordToken = async function () {
 
     return resetToken;
 }
+
+
 const User = new model("User", userSchema)
 export default User;
