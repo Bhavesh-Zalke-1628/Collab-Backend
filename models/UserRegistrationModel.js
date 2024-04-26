@@ -11,6 +11,9 @@ const userRegistrationSchema = new Schema({
     contact: {
         type: Number
     },
+    emegencyContact: {
+        type: Number
+    },
     gender: {
         type: String,
         enum: ['Male', 'Female', 'Other']
@@ -23,6 +26,22 @@ const userRegistrationSchema = new Schema({
     },
     batches: {
         type: String
+    },
+    profile: {
+        public_url: {
+            type: String
+        },
+        secure_url: {
+            type: String
+        }
+    },
+    documents: {
+        public_url: {
+            type: String
+        },
+        secure_url: {
+            type: String
+        }
     }
 })
 

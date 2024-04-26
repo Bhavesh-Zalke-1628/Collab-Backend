@@ -1,13 +1,13 @@
-import userRegistation from "../models/UserRegistrationMode"
-import Apperror from "../utils/erorUtils"
+import userRegistation from "../models/UserRegistrationModel.js"
+import Apperror from "../utils/erorUtils.js"
 
 const userRegistrer = async (req, res, next) => {
 
 
-    const { name, email, contact, bloodGroup, gender, address, batches } = req.body
+    const { name, email, contact, bloodGroup, gender, address, batches, emegencyContact } = req.body
     try {
 
-        if (!name || !email || !contact || !bloodGroup || !gender || !address || !batches) {
+        if (!name || !email || !contact || !bloodGroup || !gender || !address || !batches || !emegencyContact) {
             next(
                 new Apperror("All fiedlds are required", 400)
             )
@@ -18,10 +18,16 @@ const userRegistrer = async (req, res, next) => {
             contact,
             bloodGroup,
             gender,
-            addredd,
-            batches
+            address,
+            batches,
+            emegencyContact,
+            profile,
+            documents
         })
 
+        if (req.file) {
+
+        }
         res.status(200).json({
             success: true,
             msg: "user register successfully",
