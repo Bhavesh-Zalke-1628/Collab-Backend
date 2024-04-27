@@ -4,7 +4,7 @@ import { getAllUser, userRegistrer } from "../Controller/UserRegistrationControl
 
 const router = Router()
 
-router.route('/register')
+router.route('/swim/register')
     .post(userRegistrer)
 
 router.route('/user-info')

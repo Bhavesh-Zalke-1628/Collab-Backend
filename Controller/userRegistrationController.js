@@ -1,6 +1,6 @@
 import userRegistation from "../models/UserRegistrationModel.js"
 import Apperror from "../utils/erorUtils.js"
-
+import cloudinary from 'cloudinary'
 const userRegistrer = async (req, res, next) => {
 
 
@@ -21,12 +21,36 @@ const userRegistrer = async (req, res, next) => {
             address,
             batches,
             emegencyContact,
-            profile,
-            documents
+            profile: {
+                public_url: "Demo",
+                secure_url: "demo"
+            },
+            documents: {
+                public_url: "Demo",
+                secure_url: "demo"
+            }
         })
 
+        console.log(req.file)
         if (req.file) {
+            try {
+                const result = await cloudinary.v2.uploader.upload(req.file.path, {
+                    folder: "avatars",
+                    width: 150,
+                    height: 150,
+                    crop: "fill",
+                    gravity: "faces",
+                })
+                if (result) {
+                    user.avatar.public_id = result.public_id
+                    user.avatar.secure_url = result.secure_url
 
+                    // remove the file from the local server 
+                    fs.rm(`uploads/${req.file.filename}`)
+                }
+            } catch (error) {
+                return next(new Apperror("Image upload failed" || error, 500))
+            }
         }
         res.status(200).json({
             success: true,

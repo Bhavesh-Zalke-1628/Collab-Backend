@@ -42,15 +42,6 @@ app.use('/api/payment', paymentRouter)
 // User registration Router 
 app.use('/api/user', userRouter)
 
-
-app.get('/ping', (req, res) => {
-    res.status(200).json({
-        success: true,
-        msg: "Pong"
-    })
-})
-
-
 app.all('*', (req, res, next) => {
     res.status(404).json({
         success: false,
