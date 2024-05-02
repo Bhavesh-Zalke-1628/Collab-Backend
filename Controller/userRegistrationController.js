@@ -25,10 +25,10 @@ const userRegistrer = async (req, res, next) => {
                 public_url: "Demo",
                 secure_url: "demo"
             },
-            documents: {
-                public_url: "Demo",
-                secure_url: "demo"
-            }
+            // documents: {
+            //     public_url: "Demo",
+            //     secure_url: "demo"
+            // }
         })
 
         console.log(req.file)

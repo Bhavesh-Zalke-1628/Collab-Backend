@@ -2,60 +2,6 @@ import { Schema, model } from 'mongoose'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import { type } from 'os'
-
-// const userSchema = new Schema({
-//     username: {
-//         type: String,
-//         required: [true, 'Name is required'],
-//         maxLenght: [5, "Name must be atleast 5 character"],
-//         maxLenght: [20, "Name should be less than 5 character"],
-//         trim: true,
-//         lowercase: true,
-//     },
-//     Mo_number: {
-//         tupe: Number,
-//         required: [true, "number is required"],
-//     },
-//     email: {
-//         type: String,
-//         required: [true, "Email is required"],
-//         trim: true,
-//         unique: true,
-//         lowercase: true,
-//     },
-//     password: {
-//         type: String,
-//         required: true,
-//         select: false,
-//         maxLenght: [8, "Name must be atleast 8 character"],
-//     },
-//     // avatar: {
-//     //     public_id: {
-//     //         type: String
-//     //     },
-//     //     secure_url: {
-//     //         type: String
-//     //     }
-//     // },
-//     role: {
-//         type: String,
-//         enum: ['User', 'Admin'],
-//         default: "User"
-//     },
-//     forgotPasswordToken: String,
-//     forgotPasswordExpiry: Date,
-//     subscription: {
-//         id: String,
-//         status: String
-//     }
-// },
-//     {
-//         timestamps: true
-//     }
-// )
-
-
 const userSchema = new Schema({
     username: {
         type: String
@@ -68,7 +14,12 @@ const userSchema = new Schema({
     },
     password: {
         type: String
-    }
+    },
+    role: {
+        type: String,
+        enum: ['User', 'Admin'],
+        default: 'User'
+    },
 }, {
     timestamps: true
 })
@@ -76,7 +27,7 @@ const userSchema = new Schema({
 
 // ecnrypt the password
 userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
+    if (!this.isModified(this.password)) {
         next()
     }
     this.password = await bcrypt.hash(this.password, 10)
@@ -101,14 +52,14 @@ userSchema.methods.generateJwttoken = async function () {
 
 
 // compare the enc password with the entered password
-userSchema.methods.comparedPassword = async function (password) {
+userSchema.methods.comparePassword = async function (password) {
     try {
         return await bcrypt.compare(password, this.password)
     } catch (error) {
         console.log(error)
     }
 }
-
+    ``
 userSchema.methods.generateResetPasswordToken = async function () {
     const resetToken = await crypto.randomBytes(20).toString('hex')
     this.forgotPasswordToken = crypto
