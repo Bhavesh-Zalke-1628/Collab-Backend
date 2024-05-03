@@ -1,3 +1,4 @@
+
 import { Schema, model } from 'mongoose'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -26,13 +27,20 @@ const userSchema = new Schema({
 
 
 // ecnrypt the password
+// userSchema.pre('save', async function (next) {
+//     if (!this.isModified(this.password)) {
+//         next()
+//     }
+//     this.password = await bcrypt.hash(this.password, 10)
+// }
+// )
 userSchema.pre('save', async function (next) {
-    if (!this.isModified(this.password)) {
-        next()
+    if (!this.isModified('password')) {
+        next();
     }
-    this.password = await bcrypt.hash(this.password, 10)
-}
-)
+    this.password = await bcrypt.hash(this.password, 10);
+});
+
 
 // JWT Token
 userSchema.methods.generateJwttoken = async function () {
@@ -52,14 +60,14 @@ userSchema.methods.generateJwttoken = async function () {
 
 
 // compare the enc password with the entered password
-userSchema.methods.comparePassword = async function (password) {
+userSchema.methods.comparedPassword = async function (password) {
     try {
         return await bcrypt.compare(password, this.password)
     } catch (error) {
         console.log(error)
     }
 }
-    ``
+
 userSchema.methods.generateResetPasswordToken = async function () {
     const resetToken = await crypto.randomBytes(20).toString('hex')
     this.forgotPasswordToken = crypto

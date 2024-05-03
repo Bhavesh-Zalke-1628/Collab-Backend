@@ -4,54 +4,61 @@ import cloudinary from 'cloudinary'
 const userRegistrer = async (req, res, next) => {
 
 
-    const { name, email, contact, bloodGroup, gender, address, batches, emegencyContact } = req.body
+    const { name, email, contact, bloodGroup, gender, address, batch, alternatePhone } = req.body
     try {
-
-        if (!name || !email || !contact || !bloodGroup || !gender || !address || !batches || !emegencyContact) {
-            next(
-                new Apperror("All fiedlds are required", 400)
-            )
-        }
-        const user = userRegistation.create({
+        console.log(name, email, contact, gender, address, batch, alternatePhone)
+        // if (!name || !email || !contact || !bloodGroup || !gender || !address || !batches || !emegencyContact) {
+        //     next(
+        //         new Apperror("All fiedlds are required", 400)
+        //     )
+        // }
+        const user = await userRegistation.create({
             name,
             email,
             contact,
             bloodGroup,
             gender,
             address,
-            batches,
-            emegencyContact,
+            batch,
+            alternatePhone,
             profile: {
                 public_url: "Demo",
                 secure_url: "demo"
             },
-            // documents: {
-            //     public_url: "Demo",
-            //     secure_url: "demo"
-            // }
+            documents: {
+                public_url: "Demo",
+                secure_url: "demo"
+            }
         })
 
-        console.log(req.file)
-        if (req.file) {
-            try {
-                const result = await cloudinary.v2.uploader.upload(req.file.path, {
-                    folder: "avatars",
-                    width: 150,
-                    height: 150,
-                    crop: "fill",
-                    gravity: "faces",
-                })
-                if (result) {
-                    user.avatar.public_id = result.public_id
-                    user.avatar.secure_url = result.secure_url
-
-                    // remove the file from the local server 
-                    fs.rm(`uploads/${req.file.filename}`)
-                }
-            } catch (error) {
-                return next(new Apperror("Image upload failed" || error, 500))
-            }
+        if (!user) {
+            return next(
+                new Apperror("Failed not create successfully", 400)
+            )
         }
+        // console.log(req.file)
+        // if (req.file) {
+        //     try {
+        //         const result = await cloudinary.v2.uploader.upload(req.file.path, {
+        //             folder: "avatars",
+        //             width: 150,
+        //             height: 150,
+        //             crop: "fill",
+        //             gravity: "faces",
+        //         })
+        //         if (result) {
+        //             user.avatar.public_id = result.public_id
+        //             user.avatar.secure_url = result.secure_url
+
+        //             // remove the file from the local server 
+        //             fs.rm(`uploads/${req.file.filename}`)
+        //         }
+        //     } catch (error) {
+        //         return next(new Apperror("Image upload failed" || error, 500))
+        //     }
+        // }
+
+        console.log(user)
         res.status(200).json({
             success: true,
             msg: "user register successfully",

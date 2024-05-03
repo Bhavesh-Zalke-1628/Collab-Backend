@@ -11,12 +11,11 @@ const userRegistrationSchema = new Schema({
     contact: {
         type: Number
     },
-    emegencyContact: {
+    alternatePhone: {
         type: Number
     },
     gender: {
         type: String,
-        enum: ['Male', 'Female', 'Other']
     },
     bloodGroup: {
         type: String
@@ -24,7 +23,7 @@ const userRegistrationSchema = new Schema({
     address: {
         type: String
     },
-    batches: {
+    batch: {
         type: String
     },
     profile: {

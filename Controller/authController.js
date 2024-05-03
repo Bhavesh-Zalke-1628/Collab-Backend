@@ -4,7 +4,6 @@ import fs from 'fs/promises'
 import { config } from 'dotenv'
 config()
 import crypto from 'crypto'
-import bcrypt from 'bcryptjs'
 
 // import the files 
 import User from '../models/userModel.js'
@@ -100,29 +99,30 @@ const registerUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     try {
-        console.log('mail', email)
-        console.log('password ', password)
+        console.log(email, password)
         if (!email || !password) {
             return next(new Apperror("All fields are required", 400));
         }
 
         const user = await User.findOne({ email }).select("+password");
-
-        console.log('user', user)
-        // if (!user || !(await user.comparePassword(password))) {
-        //     return next(new Apperror("Email or password does not match", 400));
-        // }
-
-        const isMatch = await bcrypt.compare(password, user.password)
-
-        if (!isMatch) {
+        if (!user) {
             return next(new Apperror("Email or password does not match", 400));
         }
+
+        // Verify user's password
+        const isPasswordCorrect = await user.comparedPassword(password);
+        if (!isPasswordCorrect) {
+            return next(new Apperror("Email or password does not match", 400));
+        }
+
+        console.log(isPasswordCorrect)
+
         const token = await user.generateJwttoken();
-        user.password = undefined;
+        // user.password = undefined;
+        console.log(token)
         await user.save(); // Save the user after removing password
         res.cookie('token', token, cookieOption);
-
+        console.log(user)
         res.status(200).json({
             success: true,
             msg: "User logged in successfully",
