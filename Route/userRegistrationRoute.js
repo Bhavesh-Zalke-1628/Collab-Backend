@@ -6,7 +6,7 @@ import upload from '../middleware/multerMiddle.js'
 const router = Router()
 
 router.route('/swim/register')
-    .post(userRegistrer)
+    .post(upload.single('profile'), userRegistrer)
 
 router.route('/user-info')
     .get(getAllUser)

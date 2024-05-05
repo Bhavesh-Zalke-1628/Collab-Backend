@@ -12,6 +12,17 @@ const userRegistrer = async (req, res, next) => {
         //         new Apperror("All fiedlds are required", 400)
         //     )
         // }
+
+
+        const userExit = await userRegistation.findOne({ email })
+        console.log('userExit', userExit)
+
+        if (!userExit) {
+            next(
+                new Apperror('User cannot register', 400)
+            )
+        }
+
         const user = await userRegistation.create({
             name,
             email,
@@ -36,27 +47,29 @@ const userRegistrer = async (req, res, next) => {
                 new Apperror("Failed not create successfully", 400)
             )
         }
-        // console.log(req.file)
-        // if (req.file) {
-        //     try {
-        //         const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        //             folder: "avatars",
-        //             width: 150,
-        //             height: 150,
-        //             crop: "fill",
-        //             gravity: "faces",
-        //         })
-        //         if (result) {
-        //             user.avatar.public_id = result.public_id
-        //             user.avatar.secure_url = result.secure_url
 
-        //             // remove the file from the local server 
-        //             fs.rm(`uploads/${req.file.filename}`)
-        //         }
-        //     } catch (error) {
-        //         return next(new Apperror("Image upload failed" || error, 500))
-        //     }
-        // }
+        console.log('req.file', req.file)
+        if (req.file) {
+            try {
+                const result = await cloudinary.v2.uploader.upload(req.file.path, {
+                    folder: "avatars",
+                    width: 150,
+                    height: 150,
+                    crop: "fill",
+                    gravity: "faces",
+                })
+                if (result) {
+                    user.profile.public_url = result.public_id
+                    user.profile.secure_url = result.secure_url
+
+
+                    // remove the file from the local server 
+                    fs.rm(`uploads/${req.file.filename}`)
+                }
+            } catch (error) {
+                return next(new Apperror("Image upload failed" || error, 500))
+            }
+        }
 
         console.log(user)
         res.status(200).json({
