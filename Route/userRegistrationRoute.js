@@ -11,5 +11,7 @@ router.route('/swim/register')
 router.route('/user-info')
     .get(getAllUser)
 
+router.route('/swmi/document')
+    .post(upload.array(['aadhar', 'fitness']))
 
 export default router

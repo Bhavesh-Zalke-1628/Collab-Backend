@@ -1,13 +1,14 @@
 import userRegistation from "../models/UserRegistrationModel.js"
 import Apperror from "../utils/erorUtils.js"
 import cloudinary from 'cloudinary'
+import fs from 'fs/promises'
 const userRegistrer = async (req, res, next) => {
 
 
-    const { name, email, contact, bloodGroup, gender, address, batch, alternatePhone } = req.body
+    const { name, email, bloodGroup, gender, address, batch, contact, alternatePhone } = req.body
     try {
-        console.log(name, email, contact, gender, address, batch, alternatePhone)
-        // if (!name || !email || !contact || !bloodGroup || !gender || !address || !batches || !emegencyContact) {
+        console.log(name, email, gender, address, batch, alternatePhone, contact)
+        // if (!name || !email || !|| !bloodGroup || !gender || !address || !batches || !emegencyContact) {
         //     next(
         //         new Apperror("All fiedlds are required", 400)
         //     )
@@ -17,16 +18,15 @@ const userRegistrer = async (req, res, next) => {
         const userExit = await userRegistation.findOne({ email })
         console.log('userExit', userExit)
 
-        if (!userExit) {
+        if (userExit) {
             next(
-                new Apperror('User cannot register', 400)
+                new Apperror('User already store', 400)
             )
         }
 
         const user = await userRegistation.create({
             name,
             email,
-            contact,
             bloodGroup,
             gender,
             address,
@@ -72,6 +72,7 @@ const userRegistrer = async (req, res, next) => {
         }
 
         console.log(user)
+        await user.save()
         res.status(200).json({
             success: true,
             msg: "user register successfully",

@@ -16,8 +16,7 @@ const upload = multer({
             ext !== ".jpg" &&
             ext !== ".jpeg" &&
             ext !== ".png" &&
-            ext !== '.mp4' &&
-            ext !== '.pdf'
+            ext !== '.mp4'
         ) {
             cb("unsuppoerted file", false);
             return;
