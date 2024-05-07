@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
+import { type } from 'os'
 const userSchema = new Schema({
     username: {
         type: String
@@ -21,6 +22,7 @@ const userSchema = new Schema({
         enum: ['User', 'Admin'],
         default: 'User'
     },
+
 }, {
     timestamps: true
 })
@@ -53,7 +55,7 @@ userSchema.methods.generateJwttoken = async function () {
         },
         process.env.SECRET,
         {
-            expiresIn: '10d'
+            expiresIn: '2h'
         }
     )
 }
