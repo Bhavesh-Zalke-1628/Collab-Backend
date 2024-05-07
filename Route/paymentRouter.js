@@ -1,31 +1,31 @@
 import { Router } from "express";
 import { allPayment, buySubscription, getRazorpayKey, cancleSubscription, verifySbscription } from "../Controller/paymentController.js";
-import { authorisedRoles, authorisedSubscriber, isLoggedIn } from "../middleware/authMiddleWare.js";
+import { authorisedRoles, authorisedSubscriber } from "../middleware/authMiddleWare.js";
 
 const router = Router()
 
 router
-    .route('/razorpay-key/getid')
+    .route('/razorpay-key/getid/:id')
     .get(
         getRazorpayKey
     )
 router
-    .route('/razorpay/subscribe')
+    .route('/razorpay/subscribe/:id')
     .post(
-        isLoggedIn,
+
         buySubscription
     )
 
 router
-    .route('/razorpay/verify')
+    .route('/razorpay/verify/:id')
     .post(
-        isLoggedIn,
+
         verifySbscription
     )
 router
     .route('/unsubscribe')
     .post(
-        isLoggedIn,
+
         authorisedSubscriber,
         cancleSubscription
     )
@@ -33,7 +33,7 @@ router
 router
     .route('/')
     .get(
-        // isLoggedIn,
+        // 
         // authorisedRoles('Admin'),
         // authorisedSubscriber,
         allPayment
