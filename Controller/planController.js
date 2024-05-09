@@ -26,7 +26,6 @@ const createPlan = async (req, res) => {
 
 const getAllPlan = async (req, res, next) => {
     const data = await Plan.find()
-    console.log(data)
     res.send(data)
 }
 export { getAllPlan, createPlan }

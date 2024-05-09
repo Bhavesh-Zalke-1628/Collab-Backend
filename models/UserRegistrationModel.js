@@ -41,8 +41,13 @@ const userRegistrationSchema = new Schema({
         secure_url: {
             type: String
         }
+    },
+    subscription: {
+        id: String,
+        status: String
     }
 })
+
 
 
 

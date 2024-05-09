@@ -8,6 +8,7 @@ import userRegistation from "../models/UserRegistrationModel.js";
 const getRazorpayKey = async (req, res, next) => {
     try {
         const getId = process.env.RazorpayKeyId
+        console.log(getId)
         res.status(200).json({
             success: true,
             msg: "successfully get the razorpay key",
@@ -22,35 +23,36 @@ const getRazorpayKey = async (req, res, next) => {
 
 
 const buySubscription = async (req, res, next) => {
-
-    const { id } = req.params
+    console.log('req.body', req.body)
+    const { userId } = req.body
     try {
-        const user = await userRegistation.findById(id);
+        const user = await userRegistation.find({ userId });
+        // console.log(user)
         if (!user) {
             return next(
                 new Apperror("Unauthroised , Please log in", 400)
             );
         }
-        if (user.role == 'Admin') {
-            return next(
-                new Apperror("Admin cannot purchase the subscription", 400)
-            );
-        }
+
 
         const subscription = await razorpay.subscriptions.create({
-            plan_id: process.env.planIdForUnder18,
+            plan_id: process.env.Razorpay_paln_id,
             customer_notify: 1,
             total_count: 10
         })
 
-        console.log(subscription)
+
+        console.log('subscription', subscription)
+        console.log(user)
+
+
         user.subscription.id = subscription.id
         user.subscription.status = subscription.status
 
-
-        console.log(user.subscription.status)
+        console.log(user.subscription.id)
         await user.save()
 
+        console.log('user', user)
 
         res.status(200).json({
             success: true,
@@ -66,6 +68,7 @@ const buySubscription = async (req, res, next) => {
 }
 const verifySbscription = async (req, res, next) => {
     const { id } = req.params;
+
     const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = req.body
     console.log('razorpay_payment_id >', razorpay_payment_id, 'razorpay_signature >', razorpay_signature, 'razorpay_subscription_id >', razorpay_subscription_id)
     try {

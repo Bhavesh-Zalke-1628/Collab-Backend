@@ -1,3 +1,4 @@
+import { setUncaughtExceptionCaptureCallback } from "process"
 import userRegistation from "../models/UserRegistrationModel.js"
 import User from "../models/userModel.js"
 import Apperror from "../utils/erorUtils.js"
@@ -8,6 +9,7 @@ const userRegistrer = async (req, res, next) => {
 
     const { name, email, bloodGroup, gender, address, batch, contact, alternatePhone } = req.body
     try {
+        console.log(req.body)
         console.log(name, email, gender, address, batch, alternatePhone, contact)
         // if (!name || !email || !|| !bloodGroup || !gender || !address || !batches || !emegencyContact) {
         //     next(
@@ -106,10 +108,12 @@ const getAllUser = async (req, res, next) => {
 }
 
 const fitnessCard = async (req, res, next) => {
-    const id = req.params
+    const { userId } = req.body
     try {
-        console.log(id)
-        const user = await userRegistation.findById(id)
+        console.log(req.body)
+        console.log(userId)
+        console.log(req.file)
+        const user = await userRegistation.findById(userId)
         console.log('userS', user)
         console.log('req.file', req.file)
         // if (req.file) {
@@ -140,9 +144,21 @@ const fitnessCard = async (req, res, next) => {
                 folder: 'noteFile'
             })
 
+            if (result) {
+                user.documents.public_url = result.public_id;
+                user.documents.secure_url = result.secure_url;
+            }
             console.log(result)
         }
 
+
+        await user.save()
+
+        res.status(200).json({
+            suucess: true,
+            msg: "Document save successfully",
+            user
+        })
     } catch (error) {
         return next(
             new

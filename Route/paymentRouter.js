@@ -5,16 +5,16 @@ import { authorisedRoles, authorisedSubscriber } from "../middleware/authMiddleW
 const router = Router()
 
 router
-    .route('/razorpay-key/getid/:id')
+    .route('/razorpay-key/getid')
     .get(
         getRazorpayKey
     )
 router
-    .route('/razorpay/subscribe/:id')
+    .route('/razorpay/subscribe')
     .post(
-
         buySubscription
     )
+
 
 router
     .route('/razorpay/verify/:id')
