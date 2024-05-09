@@ -10,6 +10,7 @@ import morgan from 'morgan';
 import authRouter from './Route/authRouter.js'
 import paymentRouter from './Route/paymentRouter.js'
 import userRouter from './Route/userRegistrationRoute.js'
+import planRouter from './Route/planRouter.js'
 
 // parsing the data is present in the database
 app.use(express.json());
@@ -41,6 +42,12 @@ app.use('/api/payment', paymentRouter)
 
 // User registration Router 
 app.use('/api/user', userRouter)
+
+
+// Plan selection || Reagrding the plan route
+app.use('/api/plan', planRouter)
+
+
 
 app.all('*', (req, res, next) => {
     res.status(404).json({
