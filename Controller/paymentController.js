@@ -23,33 +23,29 @@ const getRazorpayKey = async (req, res, next) => {
 
 
 const buySubscription = async (req, res, next) => {
-    console.log('req.body', req.body)
-    const { userId } = req.body
+    const { id } = req.params
+    console.log(req.params)
+    console.log(id)
     try {
-        const user = await userRegistation.find({ userId });
-        // console.log(user)
+        const user = await userRegistation.findById(id)
+        console.log(user)
         if (!user) {
             return next(
-                new Apperror("Unauthroised , Please log in", 400)
-            );
+                new Apperror("Unauthorised !! plase log in", 400)
+            )
         }
-
-
         const subscription = await razorpay.subscriptions.create({
             plan_id: process.env.Razorpay_paln_id,
             customer_notify: 1,
             total_count: 10
         })
 
-
         console.log('subscription', subscription)
-        console.log(user)
-
 
         user.subscription.id = subscription.id
         user.subscription.status = subscription.status
 
-        console.log(user.subscription.id)
+
         await user.save()
 
         console.log('user', user)

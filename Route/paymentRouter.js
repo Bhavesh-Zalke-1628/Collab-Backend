@@ -10,7 +10,7 @@ router
         getRazorpayKey
     )
 router
-    .route('/razorpay/subscribe')
+    .route('/razorpay/subscribe/:id')
     .post(
         buySubscription
     )
