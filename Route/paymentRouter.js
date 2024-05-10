@@ -17,9 +17,8 @@ router
 
 
 router
-    .route('/razorpay/verify/:id')
+    .route('/razorpay/verify')
     .post(
-
         verifySbscription
     )
 router

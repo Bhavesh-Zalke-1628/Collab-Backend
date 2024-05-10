@@ -63,11 +63,12 @@ const buySubscription = async (req, res, next) => {
     }
 }
 const verifySbscription = async (req, res, next) => {
-    const { id } = req.params;
 
-    const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = req.body
+    const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature, id } = req.body
     console.log('razorpay_payment_id >', razorpay_payment_id, 'razorpay_signature >', razorpay_signature, 'razorpay_subscription_id >', razorpay_subscription_id)
     try {
+
+        console.log(id)
         const user = await userRegistation.findById(id)
         if (!user) {
             return next(
@@ -75,6 +76,8 @@ const verifySbscription = async (req, res, next) => {
             );
         }
 
+        console.log('user', user)
+        console.log(user.subscription.id)
         const subscription_id = user.subscription.id
 
         console.log(subscription_id)
