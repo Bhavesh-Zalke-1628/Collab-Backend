@@ -5,8 +5,11 @@ import Apperror from "../utils/erorUtils.js"
 import cloudinary from 'cloudinary'
 import fs from 'fs/promises'
 const userRegistrer = async (req, res, next) => {
+    console.log('req.user', req.user.id)
+    const userDemo = await User.find({ users: { $elemMatch: { eq: req.user.id } } })
+        .populate('user')
 
-
+    console.log('user at the user model', userDemo)
     const { name, email, bloodGroup, gender, address, batch, contact, alternatePhone } = req.body
     try {
         console.log(req.body)
@@ -70,7 +73,8 @@ const userRegistrer = async (req, res, next) => {
                     fs.rm(`uploads/${req.file.filename}`)
                 }
             } catch (error) {
-                return next(new Apperror("Image upload failed" || error, 500))
+                next(new Apperror("Image upload failed" || error, 500))
+                return;
             }
         }
 
@@ -116,28 +120,7 @@ const fitnessCard = async (req, res, next) => {
         const user = await userRegistation.findById(userId)
         console.log('userS', user)
         console.log('req.file', req.file)
-        // if (req.file) {
-        // try {
 
-        //     const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        //         folder: "avatars",
-        //         width: 150,
-        //         height: 150,
-        //         crop: "fill",
-        //         gravity: "faces",
-        //     })
-        //     if (result) {
-        //         user.profile.public_url = result.public_id
-        //         user.profile.secure_url = result.secure_url
-
-
-        //         // remove the file from the local server 
-        //         fs.rm(`uploads/${req.file.filename}`)
-        //     }
-        // } catch (error) {
-        //     return next(new Apperror("Image upload failed" || error, 500))
-        // }
-        // }
 
         if (req.file) {
             const result = await cloudinary.v2.uploader.upload(req.file.path, {
@@ -167,8 +150,27 @@ const fitnessCard = async (req, res, next) => {
     }
 }
 
+const getSingleUser = async (req, res, next) => {
+    const { id } = req.params
+    console.log(id)
+    try {
+        const user = await userRegistation.findById(id)
+        console.log(user)
+        res.status(200).json({
+            success: true,
+            msg: "User find successfully",
+            user
+        })
+    } catch (error) {
+        return next(
+            new Apperror(error, 400)
+        )
+    }
+}
+
 export {
     userRegistrer,
     getAllUser,
-    fitnessCard
+    fitnessCard,
+    getSingleUser
 }

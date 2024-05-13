@@ -2,6 +2,10 @@ import { Schema, model } from "mongoose";
 
 
 const userRegistrationSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
     name: {
         type: String
     },
