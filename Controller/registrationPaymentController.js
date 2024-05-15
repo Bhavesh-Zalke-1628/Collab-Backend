@@ -1,16 +1,16 @@
 import { config } from "dotenv"
 config();
 import Apperror from "../utils/erorUtils.js"
+import User from "../models/userModel.js";
 import { razorpay } from "../server.js";
 import crypto from 'crypto'
 import Payment from "../models/paymentModel.js";
-import userRegistation from "../models/UserRegistrationModel.js";
-import { env } from "process";
+
+
 const getRazorpayKey = async (req, res, next) => {
     try {
-        console.log(process.env.RazorpayKeyId)
         const getId = process.env.RazorpayKeyId
-        console.log(getId)
+        console.log('id', getId)
         res.status(200).json({
             success: true,
             msg: "successfully get the razorpay key",
@@ -25,38 +25,22 @@ const getRazorpayKey = async (req, res, next) => {
 
 
 const buySubscription = async (req, res, next) => {
-    const { id } = req.params
-    console.log(req.params)
-    console.log(id)
     try {
-        const user = await userRegistation.findById(id)
-        console.log(user)
-        if (!user) {
-            return next(
-                new Apperror("Unauthorised !! plase log in", 400)
-            )
-        }
+        console.log('hello buySubscription')
         const subscription = await razorpay.subscriptions.create({
-            plan_id: process.env.Razorpay_paln_id,
+            plan_id: process.env.registrationPlanId,
             customer_notify: 1,
             total_count: 10
         })
 
-        console.log('subscription', subscription)
-
-        user.subscription.id = subscription.id
-        user.subscription.status = subscription.status
-
-
-        await user.save()
-
-        console.log('user', user)
+        console.log(subscription)
 
         res.status(200).json({
             success: true,
             msg: "Subscribed successfully",
             subscription_id: subscription.id
         })
+
     } catch (error) {
         res.status(400).json({
             success: false,
@@ -64,22 +48,20 @@ const buySubscription = async (req, res, next) => {
         })
     }
 }
-const verifySbscription = async (req, res, next) => {
 
-    const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature, id } = req.body
+
+const verifySbscription = async (req, res, next) => {
+    const { id } = req.user;
+    const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = req.body
     console.log('razorpay_payment_id >', razorpay_payment_id, 'razorpay_signature >', razorpay_signature, 'razorpay_subscription_id >', razorpay_subscription_id)
     try {
-
-        console.log(id)
-        const user = await userRegistation.findById(id)
+        const user = await User.findById(id)
         if (!user) {
             return next(
                 new Apperror("Unauthroised , Please log in", 400)
             );
         }
 
-        console.log('user', user)
-        console.log(user.subscription.id)
         const subscription_id = user.subscription.id
 
         console.log(subscription_id)
@@ -115,9 +97,9 @@ const verifySbscription = async (req, res, next) => {
     }
 }
 const cancleSubscription = async (req, res, next) => {
-    const { id } = req.params
+    const { id } = req.user
     try {
-        const user = await userRegistation.findById(id)
+        const user = await User.findById(id)
         console.log(user)
         if (!user) {
             return next(
@@ -190,6 +172,8 @@ const allPayment = async (req, res, next) => {
         console.log("Final Month Payment:", finalMonthPayment);
         console.log("Monthly Sales Record:", monthlySalesRecord);
 
+
+
         res.status(200).json({
             success: true,
             msg: "All payments",
@@ -198,6 +182,17 @@ const allPayment = async (req, res, next) => {
             finalMonthPayment,
             monthlySalesRecord
         })
+    } catch (error) {
+        return next(
+            new Apperror(error, 400)
+        )
+    }
+}
+
+
+
+const statData = async (req, res, next) => {
+    try {
     } catch (error) {
         return next(
             new Apperror(error, 400)

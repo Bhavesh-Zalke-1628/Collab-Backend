@@ -6,19 +6,15 @@ import cloudinary from 'cloudinary'
 import fs from 'fs/promises'
 const userRegistrer = async (req, res, next) => {
     console.log('req.user', req.user.id)
-    const userDemo = await User.find({ users: { $elemMatch: { eq: req.user.id } } })
-        .populate('user')
-
+    const userDemo = await User.findOne({ _id: req.user.id }).populate(
+        "email",
+        "name"
+    );
     console.log('user at the user model', userDemo)
     const { name, email, bloodGroup, gender, address, batch, contact, alternatePhone } = req.body
     try {
         console.log(req.body)
         console.log(name, email, gender, address, batch, alternatePhone, contact)
-        // if (!name || !email || !|| !bloodGroup || !gender || !address || !batches || !emegencyContact) {
-        //     next(
-        //         new Apperror("All fiedlds are required", 400)
-        //     )
-        // }
 
 
         const userExit = await userRegistation.findOne({ email })

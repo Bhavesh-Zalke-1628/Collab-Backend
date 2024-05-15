@@ -51,7 +51,8 @@ userSchema.methods.generateJwttoken = async function () {
             id: this._id,
             email: this.email,
             role: this.role,
-            subscription: this.subscription
+            subscription: this.subscription,
+            name: this.name
         },
         process.env.SECRET,
         {

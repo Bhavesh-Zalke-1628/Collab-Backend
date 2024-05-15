@@ -11,6 +11,7 @@ import authRouter from './Route/authRouter.js'
 import paymentRouter from './Route/paymentRouter.js'
 import userRouter from './Route/userRegistrationRoute.js'
 import planRouter from './Route/planRouter.js'
+import userPaymentRouter from './Route/registrationPaymentRouter.js'
 
 // parsing the data is present in the database
 app.use(express.json());
@@ -47,7 +48,8 @@ app.use('/api/user', userRouter)
 // Plan selection || Reagrding the plan route
 app.use('/api/plan', planRouter)
 
-
+// user registration Router 
+app.use('/api/user/payment', userPaymentRouter)
 
 app.all('*', (req, res, next) => {
     res.status(404).json({
