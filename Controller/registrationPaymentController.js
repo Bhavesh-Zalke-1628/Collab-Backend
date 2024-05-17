@@ -51,23 +51,15 @@ const buySubscription = async (req, res, next) => {
 
 
 const verifySbscription = async (req, res, next) => {
-    const { id } = req.user;
     const { razorpay_payment_id, razorpay_subscription_id, razorpay_signature } = req.body
     console.log('razorpay_payment_id >', razorpay_payment_id, 'razorpay_signature >', razorpay_signature, 'razorpay_subscription_id >', razorpay_subscription_id)
     try {
-        const user = await User.findById(id)
-        if (!user) {
-            return next(
-                new Apperror("Unauthroised , Please log in", 400)
-            );
-        }
 
-        const subscription_id = user.subscription.id
 
-        console.log(subscription_id)
+
         const generatedSignature = crypto
             .createHash('sha256', process.env.key_secret)
-            .update(`${razorpay_payment_id} |${subscription_id}`)
+            .update(`${razorpay_payment_id} |${razorpay_subscription_id}`)
             .digest('hex')
 
         console.log('generatedSignature >', generatedSignature)
@@ -80,15 +72,9 @@ const verifySbscription = async (req, res, next) => {
             razorpay_subscription_id
         })
 
-        console.log(user?.subscription)
-        user.subscription.status = 'active'
-        console.log(user?.subscription)
-        console.log(user)
-        await user.save()
         res.status(200).json({
             success: true,
             msg: "Payment verified successfully",
-            user
         })
     } catch (error) {
         return next(

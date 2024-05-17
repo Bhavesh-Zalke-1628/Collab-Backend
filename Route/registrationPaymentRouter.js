@@ -15,7 +15,6 @@ router
         buySubscription
     )
 
-
 router
     .route('/razorpay/verify')
     .post(
