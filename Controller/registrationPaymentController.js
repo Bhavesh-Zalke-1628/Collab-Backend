@@ -38,9 +38,11 @@ const buySubscription = async (req, res, next) => {
         res.status(200).json({
             success: true,
             msg: "Subscribed successfully",
-            subscription_id: subscription.id
+            subscription_id: subscription.id,
+            subscription
         })
 
+        console.log(subscription.id)
     } catch (error) {
         res.status(400).json({
             success: false,

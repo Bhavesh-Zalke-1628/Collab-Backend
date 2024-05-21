@@ -16,72 +16,52 @@ const cookieOption = {
     secure: true
 }
 const registerUser = async (req, res, next) => {
-    const { username, email, password, Mo_number } = req.body
+    const { username, email, password, contact, gender } = req.body
     try {
-        console.log('he')
         console.log('username', username)
         console.log('email', email)
         console.log('password', password)
-        console.log('Mo_number', Mo_number)
-        if (!username || !email || !password || !Mo_number) {
+        console.log('contact', contact)
+        console.log('gender', gender)
+        if (!username || !email || !password || !contact || !gender) {
             return next(new Apperror('All fields are required', 400))
         }
 
         const userExist = await User.findOne({ email })
         if (userExist) {
-            return next(new Apperror("Email already exist", 400))
+            res.status(400).json({
+                success: false,
+                msg: "Email already exist"
+            })
         }
 
-        // const mobileNumberExist = await User.findOne({ mobileNumber })
+        const mobileNumberExist = await User.findOne({ contact })
 
-        // if (mobileNumber) {
-        //     return next(
-        //         new Apperror("Mobile number already exist", 400)
-        //     )
-        // }
+        if (mobileNumberExist) {
+            res.status(400).json({
+                succcess: false,
+                msg: "Mobile number already exist",
+            })
+            return;
+        }
 
 
         const user = await User.create({
             email,
             username,
             password,
-            Mo_number
+            contact,
+            gender,
+            contact
         })
 
-        if (!user) {
-            return next(new Apperror("User registration Failed", 400))
-        }
+        console.log(user)
 
-
-        // // Upload the avatar Image
-
-        // console.log(req.file)
-        // if (req.file) {
-        //     try {
-        //         const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        //             folder: "avatars",
-        //             width: 150,
-        //             height: 150,
-        //             crop: "fill",
-        //             gravity: "faces",
-        //         })
-        //         if (result) {
-        //             user.avatar.public_id = result.public_id
-        //             user.avatar.secure_url = result.secure_url
-
-        //             // remove the file from the local server 
-        //             fs.rm(`uploads/${req.file.filename}`)
-        //         }
-        //     } catch (error) {
-        //         return next(new Apperror("Image upload failed" || error, 500))
-        //     }
-        // }
-
-        await user.save()
         const token = await user.generateJwttoken();
-        user.password = undefined
+        // user.password = undefined
         res.cookie('token', token, cookieOption)
 
+        await user.save()
         res.status(200).json({
             success: true,
             msg: "User registered successfully",
@@ -89,7 +69,6 @@ const registerUser = async (req, res, next) => {
         })
     }
     catch (error) {
-
         res.status(400).json({
             success: false,
             msg: "User registration failed"

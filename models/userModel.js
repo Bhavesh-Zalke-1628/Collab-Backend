@@ -3,12 +3,11 @@ import { Schema, model } from 'mongoose'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import crypto from 'crypto'
-import { type } from 'os'
 const userSchema = new Schema({
     username: {
         type: String
     },
-    Mo_number: {
+    contact: {
         type: Number
     },
     email: {
@@ -22,7 +21,13 @@ const userSchema = new Schema({
         enum: ['User', 'Admin'],
         default: 'User'
     },
-
+    gender: {
+        type: String
+    },
+    registrationSubscription: {
+        subscriptio_id: String,
+        status: String
+    }
 }, {
     timestamps: true
 })
