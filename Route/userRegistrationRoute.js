@@ -6,7 +6,7 @@ import { fitnessCard, getAllUser, getSingleUser, userRegistrer } from "../Contro
 
 const router = Router()
 
-router.route('/swim/register')
+router.route('/swim/register:id')
     .post(upload.single('profile'), isLoggedIn, userRegistrer)
 
 router.route('/user-info')

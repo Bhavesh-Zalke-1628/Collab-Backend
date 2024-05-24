@@ -15,6 +15,8 @@ const cookieOption = {
     maxAge: 7 * 24 * 60 * 1000, //for the 7 days login token
     secure: true
 }
+
+
 const registerUser = async (req, res, next) => {
     const { username, email, password, contact, gender } = req.body
     try {
@@ -75,6 +77,7 @@ const registerUser = async (req, res, next) => {
         })
     }
 }
+
 const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
     try {
@@ -112,7 +115,6 @@ const loginUser = async (req, res, next) => {
     }
 };
 
-
 const logout = (req, res, next) => {
     res.clearCookie('token', null, {
         secure: true,
@@ -124,6 +126,8 @@ const logout = (req, res, next) => {
         msg: "User Logged out successfully"
     })
 }
+
+
 const getProfile = async (req, res, next) => {
     try {
         const userId = req.user.id

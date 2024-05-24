@@ -5,14 +5,10 @@ import Apperror from "../utils/erorUtils.js"
 import cloudinary from 'cloudinary'
 import fs from 'fs/promises'
 const userRegistrer = async (req, res, next) => {
-    console.log('req.user', req.user.id)
-    const userDemo = await User.findOne({ _id: req.user.id }).populate(
-        "email",
-        "name"
-    );
-    console.log('user at the user model', userDemo)
+    // console.log('user at the user model', userDemo)
     const { name, email, bloodGroup, gender, address, batch, contact, alternatePhone } = req.body
     try {
+
         console.log(req.body)
         console.log(name, email, gender, address, batch, alternatePhone, contact)
 
@@ -113,7 +109,9 @@ const fitnessCard = async (req, res, next) => {
         console.log(req.body)
         console.log(userId)
         console.log(req.file)
+
         const user = await userRegistation.findById(userId)
+
         console.log('userS', user)
         console.log('req.file', req.file)
 
