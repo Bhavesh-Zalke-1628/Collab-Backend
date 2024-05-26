@@ -45,6 +45,11 @@ const userRegistrationSchema = new Schema({
     subscription: {
         id: String,
         status: String
+    },
+    batch: {
+        batch: String,
+        batchTime: String,
+        batchVel: String
     }
 })
 

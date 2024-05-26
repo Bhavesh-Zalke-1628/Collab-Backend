@@ -162,9 +162,19 @@ const getSingleUser = async (req, res, next) => {
     }
 }
 
+
+const uploadBatch = async (req, res, next) => {
+    try {
+        console.log(req.body)
+        res.send(req.body)
+    } catch (error) {
+        console.log(error)
+    }
+}
 export {
     userRegistrer,
     getAllUser,
     fitnessCard,
-    getSingleUser
+    getSingleUser,
+    uploadBatch
 }

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import upload from '../middleware/multerMiddle.js'
 import { isLoggedIn } from "../middleware/authMiddleWare.js";
-import { fitnessCard, getAllUser, getSingleUser, userRegistrer } from "../Controller/userRegistrationController.js";
+import { fitnessCard, getAllUser, getSingleUser, uploadBatch, userRegistrer } from "../Controller/userRegistrationController.js";
 
 
 const router = Router()
@@ -17,5 +17,7 @@ router.route('/user-one/:id')
 
 router.route('/swim/document')
     .post(upload.single('fitness'), isLoggedIn, fitnessCard)
+router.route('/batch/upload')
+    .post(isLoggedIn, uploadBatch)
 
 export default router
