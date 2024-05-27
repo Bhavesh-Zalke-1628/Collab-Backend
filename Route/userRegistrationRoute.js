@@ -17,7 +17,7 @@ router.route('/user-one/:id')
 
 router.route('/swim/document')
     .post(upload.single('fitness'), isLoggedIn, fitnessCard)
-router.route('/batch/upload')
+router.route('/batch/upload:id')
     .post(isLoggedIn, uploadBatch)
 
 export default router

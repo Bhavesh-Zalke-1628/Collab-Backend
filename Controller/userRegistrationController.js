@@ -1,4 +1,4 @@
-import { setUncaughtExceptionCaptureCallback } from "process"
+
 import userRegistation from "../models/UserRegistrationModel.js"
 import User from "../models/userModel.js"
 import Apperror from "../utils/erorUtils.js"
@@ -164,11 +164,37 @@ const getSingleUser = async (req, res, next) => {
 
 
 const uploadBatch = async (req, res, next) => {
+    const { id } = req.params
+    console.log('req.params', req.params)
+    console.log(req.body)
+    const { batchVel, batch, batchTime } = req.body
     try {
-        console.log(req.body)
-        res.send(req.body)
+        // JSON.stringify(batch)
+        console.log(batchVel, batch, batchTime)
+        const user = await userRegistation.findById(id)
+        if (!user) {
+            res.status(200).json({
+                succes: false,
+                msg: "User not exist"
+            })
+        }
+
+        user.batch.batch = batch
+        user.batch.batchVel = batchVel
+        user.batch.batchTime = batchTime
+
+        await user.save()
+
+        res.status(200).json({
+            suucess: true,
+            msg: "User batch selection suucessfull",
+            user
+        })
     } catch (error) {
-        console.log(error)
+        res.status(200).json({
+            suucess: false,
+            msg: "User batch selection failed",
+        })
     }
 }
 export {
