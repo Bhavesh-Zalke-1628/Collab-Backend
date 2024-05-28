@@ -27,6 +27,7 @@ const getRazorpayKey = async (req, res, next) => {
 const buySubscription = async (req, res, next) => {
     try {
         console.log('hello buySubscription')
+
         const subscription = await razorpay.subscriptions.create({
             plan_id: process.env.registrationPlanId,
             customer_notify: 1,

@@ -186,7 +186,7 @@ const uploadBatch = async (req, res, next) => {
         await user.save()
 
         res.status(200).json({
-            suucess: true,
+            success: true,
             msg: "User batch selection suucessfull",
             user
         })
